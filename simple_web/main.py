@@ -14,6 +14,7 @@ WEB_PORT = 3000
 SOCKET_PORT = 5000
 
 BASE_DIR = pathlib.Path()
+print(BASE_DIR.resolve())
 STORAGE_FILE = "storage/data.json"
 
 
@@ -30,15 +31,15 @@ class HttpGetHandler(BaseHTTPRequestHandler):
 
         match pr_url.path:
             case '/':
-                self.send_html_file('index.html')
+                self.send_html_file(BASE_DIR.joinpath('index.html'))
             case '/message':
-                self.send_html_file('message.html')
+                self.send_html_file(BASE_DIR.joinpath('message.html'))
             case _:
                 file = BASE_DIR.joinpath(pr_url.path[1:])
                 if file.exists():
                     self.send_static(file)
                 else:
-                    self.send_html_file('error.html', 404)
+                    self.send_html_file(BASE_DIR.joinpath('error.html'), 404)
 
     def do_POST(self):
         data = self.rfile.read(int(self.headers['Content-Length']))
